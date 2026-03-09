@@ -3,9 +3,12 @@
 AccessibleMake - Desktop Launcher
 Runs the application as a native desktop window.
 Falls back to opening in the default browser if pywebview is not installed.
+
+Supported platforms: Windows, macOS, Linux
 """
 import os
 import sys
+import platform
 import threading
 import http.server
 import socketserver
@@ -42,6 +45,17 @@ def start_server(port):
     thread.start()
     return httpd
 
+def get_webview_gui():
+    """Return the best pywebview GUI backend for the current platform."""
+    system = platform.system()
+    if system == "Darwin":
+        return None  # pywebview uses Cocoa/WebKit by default on macOS
+    elif system == "Linux":
+        # Prefer GTK on Linux; falls back automatically if unavailable
+        return "gtk"
+    else:
+        return None  # pywebview uses EdgeChromium/MSHTML on Windows
+
 def run_with_webview(port):
     """Launch in a native desktop window using pywebview."""
     import webview
@@ -55,13 +69,15 @@ def run_with_webview(port):
         resizable=True,
         text_select=True,
     )
-    webview.start(debug=False)
+    gui = get_webview_gui()
+    webview.start(gui=gui, debug=False)
 
 def run_with_browser(port):
     """Launch in the default web browser."""
     url = f"http://127.0.0.1:{port}"
     print(f"\n  AccessibleMake is running at: {url}")
-    print(f"  Press Ctrl+C to stop.\n")
+    quit_key = "Ctrl+C" if platform.system() != "Darwin" else "⌘+C or Ctrl+C"
+    print(f"  Press {quit_key} to stop.\n")
     webbrowser.open(url)
     try:
         while True:
@@ -79,7 +95,14 @@ def main():
     except ImportError:
         print("  [AccessibleMake] pywebview not found, opening in browser.")
         print("  Tip: Install pywebview for a native desktop window:")
-        print("       pip install pywebview")
+        system = platform.system()
+        if system == "Linux":
+            print("       pip install pywebview[gtk]")
+            print("       (also needs: sudo apt install python3-gi python3-gi-cairo gir1.2-webkit2-4.1)")
+        elif system == "Darwin":
+            print("       pip install pywebview")
+        else:
+            print("       pip install pywebview")
         run_with_browser(port)
     except Exception as e:
         print(f"  [AccessibleMake] Webview error: {e}, falling back to browser.")

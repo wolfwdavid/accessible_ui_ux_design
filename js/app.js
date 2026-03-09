@@ -85,6 +85,7 @@ class AccessibleMakeApp {
     this._srHints = new ScreenReaderHints(this._state, this._bus, this._canvas);
     this._exportPanel = new ExportPanel(this._state, this._bus, this._registry);
     this._figmaExporter = new FigmaExporter(this._state, this._registry, this._canvas);
+    this._exportPanel.setFigmaExporter(this._figmaExporter);
     this._importManager = new ImportManager(this._state, this._bus, this._registry);
     this._history = new HistoryManager(this._state, this._bus);
     this._libraryPanel = new LibraryPanel(this._state, this._bus, this._registry, this._dragDrop);

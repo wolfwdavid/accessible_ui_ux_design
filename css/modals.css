@@ -209,6 +209,79 @@ dialog::backdrop {
   color: var(--am-text);
 }
 
+/* Figma Export Panel */
+.figma-export-options {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.figma-export-card {
+  padding: 20px;
+  border: 1px solid var(--am-border);
+  border-radius: var(--am-radius);
+  background: var(--am-bg-tertiary);
+}
+
+.figma-export-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--am-text);
+}
+
+.figma-export-desc {
+  margin: 0 0 14px 0;
+  font-size: 13px;
+  color: var(--am-text-secondary);
+  line-height: 1.5;
+}
+
+.export-figma-svg-btn,
+.export-figma-json-btn,
+.export-figma-zip-btn {
+  padding: 8px 20px;
+  border: 1px solid var(--am-primary);
+  border-radius: var(--am-radius-sm);
+  background: var(--am-primary);
+  color: var(--am-primary-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--am-transition);
+}
+
+.export-figma-svg-btn:hover,
+.export-figma-json-btn:hover,
+.export-figma-zip-btn:hover {
+  background: var(--am-primary-hover);
+}
+
+.export-figma-svg-btn:disabled,
+.export-figma-json-btn:disabled,
+.export-figma-zip-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.export-download-zip-btn {
+  padding: 6px 16px;
+  border: 1px solid var(--am-primary);
+  border-radius: var(--am-radius-sm);
+  background: var(--am-primary);
+  color: var(--am-primary-text);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--am-transition);
+}
+
+.export-download-zip-btn:hover {
+  background: var(--am-primary-hover);
+}
+
 /* Shortcuts Dialog */
 .shortcuts-dialog {
   width: 500px;

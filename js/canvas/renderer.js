@@ -43,21 +43,34 @@ export class CanvasRenderer {
       }
     }
 
+    // Inject animation keyframes CSS if present on the document root
+    if (doc.root.animationCSS) {
+      const iframeDoc = this._canvas.getIframeDoc();
+      let animStyle = iframeDoc.getElementById('am-animation-css');
+      if (!animStyle) {
+        animStyle = iframeDoc.createElement('style');
+        animStyle.id = 'am-animation-css';
+        iframeDoc.head.appendChild(animStyle);
+      }
+      animStyle.textContent = doc.root.animationCSS;
+    }
+
     this._bus.emit('canvas:rendered', { elementMap: this._elementMap });
   }
 
   _renderNode(node) {
+    const iframeDoc = this._canvas.getIframeDoc();
     const def = this._registry.get(node.type);
     if (!def) {
-      const fallback = document.createElement('div');
+      const fallback = iframeDoc.createElement('div');
       fallback.textContent = `[Unknown: ${node.type}]`;
       fallback.style.padding = '8px';
       fallback.style.border = '1px dashed red';
+      fallback.dataset.amId = node.id;
+      fallback.dataset.amType = node.type;
+      this._elementMap.set(node.id, fallback);
       return fallback;
     }
-
-    const iframeDoc = this._canvas.getIframeDoc();
-    const tempContainer = iframeDoc.createElement('div');
 
     const el = def.render(node.props);
     const adoptedEl = iframeDoc.adoptNode(el);

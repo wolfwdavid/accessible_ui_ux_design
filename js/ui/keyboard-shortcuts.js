@@ -8,6 +8,7 @@ export class KeyboardShortcuts {
     this._history = history;
     this._exportPanel = exportPanel;
     this._importManager = importManager;
+    this._isMac = /Mac|iPhone|iPad|iPod/i.test(navigator.platform || navigator.userAgent);
 
     this._shortcuts = [
       { key: 'i', ctrl: true, action: (e) => { e.preventDefault(); this._importManager?.openImportDialog(); }, label: 'Import' },
@@ -93,10 +94,11 @@ export class KeyboardShortcuts {
     dialog.className = 'shortcuts-dialog';
     dialog.setAttribute('aria-labelledby', 'shortcuts-title');
 
+    const modKey = this._isMac ? '⌘' : 'Ctrl';
     let rows = this._shortcuts.map(s => {
       const keys = [];
-      if (s.ctrl) keys.push('Ctrl');
-      if (s.shift) keys.push('Shift');
+      if (s.ctrl) keys.push(modKey);
+      if (s.shift) keys.push(this._isMac ? '⇧' : 'Shift');
       keys.push(s.key === ' ' ? 'Space' : s.key);
       return `<tr><td><kbd>${keys.join(' + ')}</kbd></td><td>${s.label}</td></tr>`;
     }).join('');
