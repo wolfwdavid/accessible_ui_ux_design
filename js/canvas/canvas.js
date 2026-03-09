@@ -33,7 +33,6 @@ export class CanvasController {
       background: #ffffff;
       box-shadow: 0 2px 20px rgba(0,0,0,0.1);
       margin: 40px auto;
-      will-change: transform;
     `;
     this._container.appendChild(this._viewport);
     this._resizeViewport(this._state.viewport);
@@ -48,7 +47,6 @@ export class CanvasController {
       height: 100%;
       border: none;
       display: block;
-      backface-visibility: hidden;
     `;
     this._iframe.sandbox = 'allow-same-origin allow-scripts';
     this._viewport.appendChild(this._iframe);
@@ -194,6 +192,8 @@ export class CanvasController {
   }
 
   _setupGrid() {
+    // Place the grid on the outer canvas container, NOT inside the viewport
+    // This prevents the grid overlay from sitting on top of the iframe and blurring content
     this._gridOverlay = document.createElement('div');
     this._gridOverlay.className = 'canvas-grid';
     this._gridOverlay.style.cssText = `
@@ -207,7 +207,7 @@ export class CanvasController {
         linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
       background-size: 8px 8px;
     `;
-    this._viewport.insertBefore(this._gridOverlay, this._iframe);
+    this._container.appendChild(this._gridOverlay);
     this._toggleGrid(this._state.showGrid);
   }
 
@@ -217,13 +217,24 @@ export class CanvasController {
 
   _applyTransform() {
     const zoom = this._state.zoom;
-    // Round to whole pixels to avoid sub-pixel blurriness
     const tx = Math.round(this._panOffset.x);
     const ty = Math.round(this._panOffset.y);
+
+    // Remove transform entirely at default state to avoid GPU compositing blur
+    if (zoom === 1 && tx === 0 && ty === 0) {
+      this._viewport.style.transform = 'none';
+      return;
+    }
+
     if (zoom === 1) {
-      // At 1:1 zoom, skip scale() entirely to keep crisp rendering
-      this._viewport.style.transform = `translate(${tx}px, ${ty}px)`;
+      // Use margin offset instead of transform to avoid compositing blur
+      this._viewport.style.transform = 'none';
+      this._viewport.style.marginLeft = (40 + tx) + 'px';
+      this._viewport.style.marginTop = (40 + ty) + 'px';
     } else {
+      // Only use transform when actually zoomed (non-1:1)
+      this._viewport.style.marginLeft = '';
+      this._viewport.style.marginTop = '';
       this._viewport.style.transform = `translate(${tx}px, ${ty}px) scale(${zoom})`;
     }
   }
