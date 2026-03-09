@@ -33,6 +33,7 @@ export class CanvasController {
       background: #ffffff;
       box-shadow: 0 2px 20px rgba(0,0,0,0.1);
       margin: 40px auto;
+      will-change: transform;
     `;
     this._container.appendChild(this._viewport);
     this._resizeViewport(this._state.viewport);
@@ -47,6 +48,7 @@ export class CanvasController {
       height: 100%;
       border: none;
       display: block;
+      backface-visibility: hidden;
     `;
     this._iframe.sandbox = 'allow-same-origin allow-scripts';
     this._viewport.appendChild(this._iframe);
@@ -215,7 +217,15 @@ export class CanvasController {
 
   _applyTransform() {
     const zoom = this._state.zoom;
-    this._viewport.style.transform = `translate(${this._panOffset.x}px, ${this._panOffset.y}px) scale(${zoom})`;
+    // Round to whole pixels to avoid sub-pixel blurriness
+    const tx = Math.round(this._panOffset.x);
+    const ty = Math.round(this._panOffset.y);
+    if (zoom === 1) {
+      // At 1:1 zoom, skip scale() entirely to keep crisp rendering
+      this._viewport.style.transform = `translate(${tx}px, ${ty}px)`;
+    } else {
+      this._viewport.style.transform = `translate(${tx}px, ${ty}px) scale(${zoom})`;
+    }
   }
 
   _toggleGrid(show) {

@@ -9,6 +9,8 @@
   border-radius: 4px;
   overflow: hidden;
   transition: width 0.3s ease, height 0.3s ease;
+  will-change: transform;
+  transform-origin: 0 0;
 }
 
 .canvas-iframe {
@@ -17,6 +19,7 @@
   border: none;
   display: block;
   background: #ffffff;
+  backface-visibility: hidden;
 }
 
 .canvas-grid {
