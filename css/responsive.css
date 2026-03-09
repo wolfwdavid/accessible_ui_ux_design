@@ -1,0 +1,57 @@
+/* ========================================
+   Responsive Styles for the Editor
+   ======================================== */
+
+@media (max-width: 1200px) {
+  :root {
+    --am-panel-width: 240px;
+  }
+}
+
+@media (max-width: 900px) {
+  .am-app {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--am-toolbar-height) auto 1fr auto var(--am-statusbar-height);
+    grid-template-areas:
+      "toolbar"
+      "left"
+      "canvas"
+      "right"
+      "status";
+  }
+
+  .am-left-panel {
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid var(--am-border);
+  }
+
+  .am-right-panel {
+    max-height: 300px;
+    border-left: none;
+    border-top: 1px solid var(--am-border);
+  }
+
+  .library-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+/* Print styles */
+@media print {
+  .am-toolbar,
+  .am-left-panel,
+  .am-right-panel,
+  .am-status-bar,
+  .toast-container {
+    display: none !important;
+  }
+
+  .am-app {
+    display: block;
+  }
+
+  .am-canvas {
+    overflow: visible;
+  }
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AccessibleMake — Accessible Design-to-Code Tool</title>
+  <meta name="description" content="A Figma Make-like design tool with built-in WCAG accessibility compliance. Design accessible interfaces and export clean, semantic HTML/CSS.">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/canvas.css">
+  <link rel="stylesheet" href="css/panels.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/audit.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- App Module -->
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <!-- Skip Navigation for the editor itself -->
+  <a href="#canvas-area" class="am-skip-link">Skip to design canvas</a>
+
+  <div class="am-app" role="application" aria-label="AccessibleMake Design Tool">
+
+    <!-- Toolbar -->
+    <header class="am-toolbar" id="toolbar" role="banner">
+      <!-- Populated by js/ui/toolbar.js -->
+    </header>
+
+    <!-- Left Panel: Component Library -->
+    <aside class="am-left-panel" id="left-panel" aria-label="Component library">
+      <!-- Populated by js/components/library-panel.js -->
+    </aside>
+
+    <!-- Main Canvas Area -->
+    <main class="am-canvas" id="canvas-area" aria-label="Design canvas">
+      <!-- Populated by js/canvas/canvas.js -->
+    </main>
+
+    <!-- Right Panel: Properties & Inspectors -->
+    <aside class="am-right-panel" id="right-panel" aria-label="Properties and inspectors">
+      <!-- Populated by js/ui/tab-manager.js -->
+    </aside>
+
+    <!-- Status Bar -->
+    <footer class="am-status-bar" role="contentinfo">
+      <span class="status-item">
+        <span class="status-score" id="status-score" aria-live="polite">A11y Score: --/100</span>
+      </span>
+      <span class="status-item">
+        <span id="status-viewport">Desktop 1440×900</span>
+      </span>
+      <span class="status-item" style="margin-left: auto;">
+        <span>Shift+? for keyboard shortcuts</span>
+      </span>
+      <span class="status-item">
+        <span>WCAG 2.1 AA/AAA</span>
+      </span>
+    </footer>
+
+  </div>
+</body>
+</html>

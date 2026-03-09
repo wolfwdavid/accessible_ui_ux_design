@@ -1,0 +1,39 @@
+{
+  "name": "Accessible Form Page",
+  "root": {
+    "type": "page",
+    "props": { "title": "Contact Us", "lang": "en" },
+    "children": [
+      {
+        "type": "header-landmark",
+        "props": { "label": "Site Header" },
+        "children": [
+          { "type": "skip-link", "props": { "text": "Skip to form", "target": "main-content" } },
+          { "type": "heading", "props": { "level": 1, "text": "Contact Us" } }
+        ]
+      },
+      {
+        "type": "main-landmark",
+        "props": { "id": "main-content" },
+        "children": [
+          { "type": "heading", "props": { "level": 2, "text": "Send Us a Message" } },
+          { "type": "paragraph", "props": { "text": "Fill out the form below and we will get back to you within 24 hours." } },
+          { "type": "text-input", "props": { "label": "Full Name", "required": true, "type": "text" } },
+          { "type": "text-input", "props": { "label": "Email Address", "required": true, "type": "email" } },
+          { "type": "text-input", "props": { "label": "Phone Number", "type": "tel" } },
+          { "type": "select", "props": { "label": "Subject", "options": ["General Inquiry", "Support", "Feedback", "Partnership"], "required": true } },
+          { "type": "textarea", "props": { "label": "Your Message", "required": true, "rows": 5 } },
+          { "type": "checkbox", "props": { "label": "I agree to the privacy policy" } },
+          { "type": "form-button", "props": { "text": "Send Message", "type": "submit" } }
+        ]
+      },
+      {
+        "type": "footer-landmark",
+        "props": {},
+        "children": [
+          { "type": "paragraph", "props": { "text": "Your data is protected. Read our privacy policy." } }
+        ]
+      }
+    ]
+  }
+}

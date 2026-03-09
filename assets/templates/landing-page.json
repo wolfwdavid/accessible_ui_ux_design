@@ -1,0 +1,51 @@
+{
+  "name": "Accessible Landing Page",
+  "root": {
+    "type": "page",
+    "props": { "title": "Welcome - My Accessible Site", "lang": "en" },
+    "children": [
+      {
+        "type": "header-landmark",
+        "props": { "label": "Site Header" },
+        "children": [
+          { "type": "skip-link", "props": { "text": "Skip to main content", "target": "main-content" } },
+          { "type": "heading", "props": { "level": 1, "text": "Welcome to Our Site" } }
+        ]
+      },
+      {
+        "type": "nav-landmark",
+        "props": { "label": "Main Navigation" },
+        "children": [
+          {
+            "type": "nav",
+            "props": {
+              "label": "Main",
+              "links": [
+                { "text": "Home", "href": "#" },
+                { "text": "About", "href": "#about" },
+                { "text": "Services", "href": "#services" },
+                { "text": "Contact", "href": "#contact" }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "type": "main-landmark",
+        "props": { "id": "main-content" },
+        "children": [
+          { "type": "heading", "props": { "level": 2, "text": "Our Mission" } },
+          { "type": "paragraph", "props": { "text": "We build accessible, inclusive digital experiences that work for everyone." } },
+          { "type": "button", "props": { "text": "Get Started", "variant": "primary" } }
+        ]
+      },
+      {
+        "type": "footer-landmark",
+        "props": { "label": "Site Footer" },
+        "children": [
+          { "type": "paragraph", "props": { "text": "© 2026 My Accessible Site. All rights reserved." } }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- Error icon: red circle with X -->
+  <symbol id="icon-error" viewBox="0 0 20 20">
+    <circle cx="10" cy="10" r="9" fill="#d32f2f"/>
+    <path d="M7 7l6 6M13 7l-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- Warning icon: yellow triangle with ! -->
+  <symbol id="icon-warning" viewBox="0 0 20 20">
+    <path d="M10 2L1 18h18L10 2z" fill="#f9a825"/>
+    <path d="M10 8v4M10 14v1" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- Alert icon: blue circle with i -->
+  <symbol id="icon-alert" viewBox="0 0 20 20">
+    <circle cx="10" cy="10" r="9" fill="#1976d2"/>
+    <path d="M10 6v1M10 9v5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- Pass icon: green circle with checkmark -->
+  <symbol id="icon-pass" viewBox="0 0 20 20">
+    <circle cx="10" cy="10" r="9" fill="#4caf50"/>
+    <path d="M6 10l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+</svg>

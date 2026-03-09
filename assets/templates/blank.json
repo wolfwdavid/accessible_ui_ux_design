@@ -1,0 +1,14 @@
+{
+  "name": "Blank Page",
+  "root": {
+    "type": "page",
+    "props": { "title": "Untitled Page", "lang": "en" },
+    "children": [
+      {
+        "type": "main-landmark",
+        "props": { "id": "main-content" },
+        "children": []
+      }
+    ]
+  }
+}
