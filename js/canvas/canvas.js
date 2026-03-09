@@ -18,6 +18,7 @@ export class CanvasController {
     this._setupIframe();
     this._setupPanZoom();
     this._setupGrid();
+    this._setupFileDrop();
     this._bus.on('state:zoom', ({ value }) => this._applyZoom(value));
     this._bus.on('state:showGrid', ({ value }) => this._toggleGrid(value));
     this._bus.on('state:viewport', ({ value }) => this._resizeViewport(value));
@@ -187,6 +188,28 @@ export class CanvasController {
       if (this._panStart) {
         this._panStart = null;
         this._container.style.cursor = '';
+      }
+    });
+  }
+
+  _setupFileDrop() {
+    // Allow dropping media files on the outer canvas area
+    this._container.addEventListener('dragover', (e) => {
+      if (e.dataTransfer.types.includes('Files')) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+      }
+    });
+
+    this._container.addEventListener('drop', (e) => {
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const hasMedia = Array.from(e.dataTransfer.files).some(
+          f => f.type.startsWith('image/') || f.type.startsWith('video/')
+        );
+        if (hasMedia) {
+          e.preventDefault();
+          this._bus.emit('media:file-drop', { files: e.dataTransfer.files });
+        }
       }
     });
   }

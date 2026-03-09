@@ -39,6 +39,12 @@ export class Toolbar {
     }, 'import-btn');
     this._container.appendChild(importBtn);
 
+    // Upload Media button
+    const uploadBtn = this._createButton('Upload Media', '🖼 Media', () => {
+      this._openMediaUpload();
+    }, 'upload-media-btn');
+    this._container.appendChild(uploadBtn);
+
     this._container.appendChild(this._createSeparator());
 
     this._undoBtn = this._createButton('Undo', '↩', () => this._history.undo(), 'undo-btn');
@@ -143,6 +149,78 @@ export class Toolbar {
     if (this._zoomDisplay) {
       this._zoomDisplay.textContent = `${Math.round((this._state.zoom || 1) * 100)}%`;
     }
+  }
+
+  _openMediaUpload() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = 'image/*,video/*';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+
+    input.addEventListener('change', async () => {
+      if (!input.files || input.files.length === 0) {
+        input.remove();
+        return;
+      }
+
+      for (const file of input.files) {
+        const dataURL = await this._readFileAsDataURL(file);
+        const isVideo = file.type.startsWith('video/');
+        const isImage = file.type.startsWith('image/');
+
+        if (isImage) {
+          // Get image dimensions
+          const dims = await this._getImageDimensions(dataURL);
+          this._bus.emit('component:request-add', {
+            type: 'image',
+            props: {
+              src: dataURL,
+              alt: file.name.replace(/\.[^.]+$/, ''),
+              width: dims.width > 800 ? '100%' : dims.width + 'px',
+              height: dims.width > 800 ? 'auto' : dims.height + 'px',
+              isDecorative: false
+            }
+          });
+          this._bus.emit('toast:show', { message: `Added image: ${file.name}`, type: 'success' });
+        } else if (isVideo) {
+          this._bus.emit('component:request-add', {
+            type: 'video',
+            props: {
+              src: dataURL,
+              title: file.name.replace(/\.[^.]+$/, ''),
+              captions: true,
+              width: '100%',
+              height: 'auto'
+            }
+          });
+          this._bus.emit('toast:show', { message: `Added video: ${file.name}`, type: 'success' });
+        }
+      }
+
+      input.remove();
+    });
+
+    input.click();
+  }
+
+  _readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  _getImageDimensions(dataURL) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      img.onerror = () => resolve({ width: 300, height: 200 });
+      img.src = dataURL;
+    });
   }
 
   _showFigmaMenu(anchorBtn) {

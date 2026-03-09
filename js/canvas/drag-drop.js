@@ -13,6 +13,11 @@ export class DragDropManager {
     this._dropIndicator = null;
 
     this._bus.on('canvas:ready', () => this._setupDropZone());
+
+    // Handle media files dropped on the outer canvas container
+    this._bus.on('media:file-drop', ({ files }) => {
+      this._handleFileDrop(files, null, null);
+    });
   }
 
   _setupDropZone() {
@@ -38,6 +43,13 @@ export class DragDropManager {
       this._hideDropIndicator(doc);
 
       const componentType = e.dataTransfer.getData('application/am-component');
+
+      // Handle file drops (images/videos from file explorer) — only if not a component drag
+      if (!componentType && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        this._handleFileDrop(e.dataTransfer.files, e, doc);
+        return;
+      }
+
       if (!componentType) return;
 
       const def = this._registry.get(componentType);
@@ -116,6 +128,78 @@ export class DragDropManager {
     if (this._dropIndicator?.parentNode) {
       this._dropIndicator.remove();
     }
+  }
+
+  async _handleFileDrop(files, e, doc) {
+    let dropY = 40;
+    let dropX = 40;
+    if (e && doc) {
+      const canvasRoot = doc.getElementById('canvas-root');
+      const rootRect = canvasRoot ? canvasRoot.getBoundingClientRect() : { left: 0, top: 0 };
+      dropX = Math.round((e.clientX - rootRect.left) / 8) * 8;
+      dropY = Math.round((e.clientY - rootRect.top) / 8) * 8;
+    }
+
+    for (const file of files) {
+      const isImage = file.type.startsWith('image/');
+      const isVideo = file.type.startsWith('video/');
+      if (!isImage && !isVideo) continue;
+
+      const dataURL = await this._readFileAsDataURL(file);
+
+      let newNode;
+      if (isImage) {
+        const dims = await this._getImageDimensions(dataURL);
+        newNode = createComponentNode('image', {
+          src: dataURL,
+          alt: file.name.replace(/\.[^.]+$/, ''),
+          width: dims.width > 800 ? '100%' : dims.width + 'px',
+          height: dims.width > 800 ? 'auto' : dims.height + 'px',
+          isDecorative: false
+        });
+        this._bus.emit('toast:show', { message: `Added image: ${file.name}`, type: 'success' });
+      } else {
+        newNode = createComponentNode('video', {
+          src: dataURL,
+          title: file.name.replace(/\.[^.]+$/, ''),
+          captions: true,
+          width: '100%',
+          height: 'auto'
+        });
+        this._bus.emit('toast:show', { message: `Added video: ${file.name}`, type: 'success' });
+      }
+
+      newNode.position = { x: dropX, y: dropY, width: null, height: null, z: 1 };
+      dropY += 40; // Offset stacked files
+
+      // Add to the main content area
+      const stateDoc = this._state.document || this._state._state?.document;
+      const root = stateDoc?.root;
+      if (root) {
+        const mainChild = root.children?.find(c => c.type === 'main-landmark');
+        this._state.addChild(mainChild ? mainChild.id : root.id, newNode);
+      }
+
+      this._state.setSelection([newNode.id]);
+    }
+  }
+
+  _readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  _getImageDimensions(dataURL) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      img.onerror = () => resolve({ width: 300, height: 200 });
+      img.src = dataURL;
+    });
   }
 
   setupDraggableItem(element, componentType) {

@@ -77,15 +77,36 @@ export const mediaComponents = [
     category: 'media',
     label: 'Video',
     icon: '#icon-video',
-    defaultProps: { src: '', title: 'Video title', captions: true },
+    defaultProps: { src: '', title: 'Video title', captions: true, width: '100%', height: 'auto' },
     render(props) {
       const wrapper = document.createElement('div');
-      wrapper.style.background = '#1a1a1a';
-      wrapper.style.color = '#fff';
-      wrapper.style.padding = '40px';
-      wrapper.style.textAlign = 'center';
-      wrapper.style.borderRadius = '4px';
-      wrapper.innerHTML = `<span aria-hidden="true" style="font-size: 48px;">&#9654;</span><p>${props.title || 'Video'}</p>`;
+      if (props.src) {
+        const video = document.createElement('video');
+        video.controls = true;
+        video.style.width = props.width || '100%';
+        video.style.height = props.height || 'auto';
+        video.style.maxWidth = '100%';
+        video.style.display = 'block';
+        video.style.borderRadius = '4px';
+        video.style.background = '#000';
+        video.setAttribute('aria-label', props.title || 'Video');
+        video.preload = 'metadata';
+        const source = document.createElement('source');
+        source.src = props.src;
+        // Detect type from data URI or extension
+        if (props.src.includes('video/webm')) source.type = 'video/webm';
+        else if (props.src.includes('video/ogg')) source.type = 'video/ogg';
+        else source.type = 'video/mp4';
+        video.appendChild(source);
+        wrapper.appendChild(video);
+      } else {
+        wrapper.style.background = '#1a1a1a';
+        wrapper.style.color = '#fff';
+        wrapper.style.padding = '40px';
+        wrapper.style.textAlign = 'center';
+        wrapper.style.borderRadius = '4px';
+        wrapper.innerHTML = `<span aria-hidden="true" style="font-size: 48px;">&#9654;</span><p>${props.title || 'Video'}</p>`;
+      }
       return wrapper;
     },
     toHTML(props) {
