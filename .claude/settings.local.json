@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(git update-index:*)",
+      "Bash(curl:*)",
+      "Read(//c/Users/Mkaru/Downloads/**)",
+      "Bash(python3 -c \":*)",
+      "Bash(python:*)",
+      "Bash(node:*)",
+      "Bash(kill %1:*)",
+      "Bash(gh api:*)",
+      "Bash(git -C /c/Users/Mkaru/Documents/Hello_World/accessible_ui_ux_design log --all --format=\"%H %an %ae%n%b\" | head -100)",
+      "Bash(git rebase:*)",
+      "Bash(git -C /c/Users/Mkaru/Documents/Hello_World/accessible_ui_ux_design log --all --format=\"%H %s%n%b\" | head -40)",
+      "Bash(git -C /c/Users/Mkaru/Documents/Hello_World/accessible_ui_ux_design push --force origin main)"
+    ]
+  }
+}
